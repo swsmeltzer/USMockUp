@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Global Crisis Dashboard — US View (Mockup)</title>
+<style>
+:root { color-scheme: light; }
+.app-root {
+  color-scheme: light;
+  --surface-1:      #fcfcfb;
+  --page-plane:     #f9f9f7;
+  --text-primary:   #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted:     #898781;
+  --gridline:       #e1e0d9;
+  --border:         rgba(11,11,11,0.10);
+  --card-shadow:    0 1px 2px rgba(11,11,11,0.04), 0 1px 8px rgba(11,11,11,0.03);
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
+  --series-4: #eda100; --series-5: #e87ba4;
+  --good: #0ca30c; --warning: #fab219; --critical: #d03b3b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .app-root {
+    color-scheme: dark;
+    --surface-1: #1a1a19; --page-plane: #0d0d0d;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #898781;
+    --gridline: #2c2c2a; --border: rgba(255,255,255,0.10);
+    --card-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 8px rgba(0,0,0,0.2);
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+    --series-4: #c98500; --series-5: #d55181;
+    --good: #0ca30c; --warning: #fab219; --critical: #e66767;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--page-plane);
+}
+.app-root { background: var(--page-plane); color: var(--text-primary); min-height: 100vh; padding-bottom: 40px; }
+
+.mockup-banner {
+  background: #3a2f0d; color: #ffd98a; font-size: 12.5px; text-align: center;
+  padding: 8px 14px; line-height: 1.5; border-bottom: 1px solid rgba(255,217,138,0.3);
+}
+.mockup-banner strong { color: #ffe9b8; }
+
+header.app-head {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--surface-1); border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+}
+.head-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.head-row h1 { font-size: 16px; font-weight: 700; margin: 0; flex: 1; letter-spacing: -0.01em; }
+
+.view-toggle { display: flex; gap: 6px; margin-bottom: 8px; }
+.view-btn {
+  flex: 1; border: 1px solid var(--border); background: var(--page-plane); color: var(--text-secondary);
+  font-size: 12.5px; font-weight: 600; padding: 8px 8px; border-radius: 8px; cursor: pointer;
+}
+.view-btn.active { background: var(--surface-1); color: var(--text-primary); border-color: var(--warning); }
+
+.district-picker { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; }
+.district-picker::-webkit-scrollbar { height: 4px; }
+.district-chip {
+  flex: none; border: 1px solid var(--border); background: var(--page-plane); color: var(--text-secondary);
+  font-size: 11.5px; font-weight: 600; padding: 6px 10px; border-radius: 20px; cursor: pointer; white-space: nowrap;
+}
+.district-chip.active { background: var(--warning); color: #141311; border-color: var(--warning); }
+.district-chip.has-data::after { content: " ●"; font-size: 8px; vertical-align: middle; opacity: 0.6; }
+
+main { padding: 14px; max-width: 900px; margin: 0 auto; }
+
+.crisis-section {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+  padding: 16px 16px 14px; margin-bottom: 14px; box-shadow: var(--card-shadow);
+}
+.crisis-section h3 { font-size: 15px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.005em; }
+.crisis-caption { font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; margin: 0 0 10px; }
+
+.district-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 2px; }
+.district-header h2 { font-size: 20px; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+.district-states { font-size: 12px; color: var(--text-muted); }
+
+.hazard-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
+.hazard-tag {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 650;
+  padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--page-plane);
+}
+.hazard-tag .risk-dot { width: 8px; height: 8px; border-radius: 50%; }
+.risk-high { background: var(--critical); }
+.risk-mod { background: var(--warning); }
+.risk-low { background: var(--good); }
+
+.chart-legend { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 4px 0 10px; }
+.legend-item { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-secondary); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+
+.svg-chart-wrap { width: 100%; }
+.svg-chart-wrap svg { width: 100%; height: auto; display: block; }
+.svg-chart-wrap .bar { fill: var(--series-2); }
+.svg-chart-wrap .gridline { stroke: var(--gridline); stroke-width: 1; }
+.svg-chart-wrap .axis-label { fill: var(--text-muted); font-size: 9px; font-family: inherit; }
+.svg-chart-wrap .bar-label { fill: var(--text-secondary); font-size: 9px; font-family: inherit; }
+.svg-chart-wrap .hbar-label { fill: var(--text-secondary); font-size: 10.5px; font-weight: 600; font-family: inherit; }
+.svg-chart-wrap .hbar-value { fill: var(--text-muted); font-size: 10px; font-family: inherit; }
+
+.district-stats { display: flex; flex-wrap: wrap; gap: 16px; margin: 2px 0 12px; }
+.district-stat { font-size: 12px; color: var(--text-secondary); }
+.district-stat b { color: var(--text-primary); font-size: 14px; font-weight: 750; }
+
+.outlook-box {
+  font-size: 12.5px; color: var(--text-secondary); background: var(--page-plane);
+  border: 1px solid var(--border); border-left: 3px solid var(--series-4); border-radius: 10px;
+  padding: 12px 14px; margin: 4px 0; line-height: 1.55;
+}
+.outlook-box strong { color: var(--text-primary); }
+
+.events-list { list-style: none; margin: 4px 0 0; padding: 0; }
+.events-list li {
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; color: var(--text-secondary);
+  display: flex; gap: 10px; align-items: baseline;
+}
+.events-list li:last-child { border-bottom: none; }
+.events-list .event-year {
+  font-weight: 700; color: var(--text-primary); font-size: 12.5px; flex: none; width: 44px;
+}
+.events-list .event-name { color: var(--text-primary); font-weight: 600; }
+
+.trauma-note {
+  font-size: 12px; color: var(--text-muted); background: var(--page-plane); border: 1px dashed var(--border);
+  border-radius: 10px; padding: 12px 14px; line-height: 1.55; margin-top: 4px;
+}
+
+.source-tag {
+  display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
+  color: var(--text-muted); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; margin-top: 8px;
+}
+
+.placeholder-card { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 13px; }
+.placeholder-card strong { display: block; color: var(--text-primary); font-size: 16px; margin-bottom: 6px; }
+
+.sources-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+@media (min-width: 640px) { .sources-grid { grid-template-columns: repeat(2, 1fr); } }
+.source-card { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--page-plane); }
+.source-card .src-name { font-size: 12.5px; font-weight: 700; margin-bottom: 2px; }
+.source-card .src-detail { font-size: 11.5px; color: var(--text-muted); line-height: 1.5; }
+
+footer.app-foot { text-align: center; font-size: 11px; color: var(--text-muted); padding: 20px 16px 8px; }
+</style>
+</head>
+<body>
+<div class="app-root" id="appRoot">
+
+  <div class="mockup-banner">
+    <strong>MOCKUP — concept only.</strong> The hazard profile and severity chart for all 17 districts below are <strong>real data</strong>, pulled from FEMA's National Risk Index and aggregated using an approximate county-to-district map built from real church locations (not an official EFCA boundary — see “Data Sources” at the bottom). The “Looking forward” outlook and “Notable major disasters” list are still hand-written examples for 3 districts only (Southeast, West, Midwest); everything else is honestly marked not-yet-populated.
+  </div>
+
+  <header class="app-head">
+    <div class="head-row">
+      <h1>Global Crisis Dashboard</h1>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn" type="button">Global View</button>
+      <button class="view-btn active" type="button">United States View</button>
+    </div>
+    <div class="district-picker" id="districtPicker"></div>
+  </header>
+
+  <main id="mainContent"></main>
+
+  <footer class="app-foot">
+    Concept mockup for EFCA Crisis Response — district boundaries from efca.org/districts.
+  </footer>
+
+</div>
+
+<script>
+// ---- District list (real, from efca.org/districts) ----
+const DISTRICTS = [
+  { id: "allegheny", name: "Allegheny District", states: "Eastern OH, western MD, western NY, western PA, WV" },
+  { id: "central", name: "EFCA Central", states: "AR, IA, MO, southeastern SD" },
+  { id: "east", name: "EFCA East", states: "DE, eastern MD, NJ, eastern NY (incl. NYC), eastern PA, VA (incl. DC)" },
+  { id: "southeast", name: "EFCA Southeast", states: "AL, FL, GA, KY, LA, MS, NC, SC, TN" },
+  { id: "txok", name: "Texas-Oklahoma District", states: "TX (except El Paso), OK" },
+  { id: "west", name: "EFCA West", states: "AZ, CA, ID, NV, NM, El Paso (TX), UT" },
+  { id: "forestlakes", name: "Forest Lakes District", states: "Western ⅔ of Upper Michigan, WI" },
+  { id: "greatlakes", name: "Great Lakes District", states: "IL, IN, MI (portions), OH (portions), Florence/KY" },
+  { id: "hawaii", name: "Hawaii District", states: "HI" },
+  { id: "inlandmtn", name: "Inland Mountain District", states: "Northern ID, central/western MT, eastern WA" },
+  { id: "midwest", name: "Midwest District", states: "KS, Kansas City metro, NE" },
+  { id: "newengland", name: "New England District", states: "CT, ME, MA, NH, RI, VT" },
+  { id: "northcentral", name: "North Central District", states: "MN (with exclusions)" },
+  { id: "northernplains", name: "Northern Plains District", states: "ND, MN (portions), MT, SD" },
+  { id: "pnw", name: "Pacific Northwest District", states: "AK, OR, western WA" },
+  { id: "rockymtn", name: "Rocky Mountain District", states: "CO, SD, WY" },
+  { id: "westerndist", name: "Western District", states: "Northern CA, NV" },
+];
+
+// ---- REAL hazard data, all 17 districts — FEMA National Risk Index, county-level, ----
+// ---- aggregated over an approximate county-to-district map (see Data Sources card). ----
+// Source: us_view_hazard_profiles.json + us_view_district_crosswalk.json (delivered alongside this mockup).
+const NRI_DATA = {"allegheny":{"n":157,"pop":16681770,"avgRisk":55.6,"hazards":{"AVLN":43.7,"CFLD":28.0,"CWAV":32.2,"DRGT":27.9,"ERQK":44.6,"HAIL":46.5,"HWAV":41.7,"HRCN":53.5,"ISTM":50.2,"LNDS":73.4,"LTNG":59.5,"IFLD":71.7,"SWND":50.8,"TRND":37.9,"TSUN":0,"VLCN":0,"WFIR":30.6,"WNTW":49.9}},"central":{"n":315,"pop":12822600,"avgRisk":46.7,"hazards":{"AVLN":0,"CFLD":0,"CWAV":52.8,"DRGT":64.2,"ERQK":48.8,"HAIL":59.6,"HWAV":60.9,"HRCN":26.4,"ISTM":63.3,"LNDS":55.2,"LTNG":42.0,"IFLD":44.8,"SWND":55.7,"TRND":63.3,"TSUN":0,"VLCN":0,"WFIR":45.1,"WNTW":53.1}},"east":{"n":248,"pop":50737925,"avgRisk":53.2,"hazards":{"AVLN":42.4,"CFLD":59.1,"CWAV":44.7,"DRGT":45.3,"ERQK":62.1,"HAIL":33.3,"HWAV":52.5,"HRCN":75.0,"ISTM":46.5,"LNDS":53.6,"LTNG":56.6,"IFLD":59.6,"SWND":57.9,"TRND":42.4,"TSUN":0,"VLCN":0,"WFIR":32.7,"WNTW":57.3}},"southeast":{"n":793,"pop":71311377,"avgRisk":54.9,"hazards":{"AVLN":5.3,"CFLD":37.5,"CWAV":53.1,"DRGT":49.9,"ERQK":62.2,"HAIL":45.1,"HWAV":56.5,"HRCN":67.6,"ISTM":51.1,"LNDS":45.3,"LTNG":61.4,"IFLD":52.7,"SWND":55.5,"TRND":64.4,"TSUN":0,"VLCN":0,"WFIR":48.1,"WNTW":35.6}},"txok":{"n":330,"pop":32187870,"avgRisk":50.4,"hazards":{"AVLN":29.4,"CFLD":48.1,"CWAV":56.0,"DRGT":74.1,"ERQK":31.1,"HAIL":67.6,"HWAV":57.0,"HRCN":46.3,"ISTM":56.2,"LNDS":29.4,"LTNG":44.6,"IFLD":42.4,"SWND":50.8,"TRND":59.8,"TSUN":0,"VLCN":0,"WFIR":74.6,"WNTW":47.8}},"west":{"n":136,"pop":47272468,"avgRisk":57.8,"hazards":{"AVLN":51.9,"CFLD":61.0,"CWAV":21.7,"DRGT":50.2,"ERQK":68.2,"HAIL":31.1,"HWAV":57.3,"HRCN":12.1,"ISTM":21.5,"LNDS":67.6,"LTNG":63.0,"IFLD":58.9,"SWND":27.0,"TRND":17.3,"TSUN":53.6,"VLCN":39.9,"WFIR":89.0,"WNTW":60.9}},"forestlakes":{"n":82,"pop":6091722,"avgRisk":55.6,"hazards":{"AVLN":0,"CFLD":26.6,"CWAV":83.8,"DRGT":24.9,"ERQK":16.9,"HAIL":72.7,"HWAV":47.2,"HRCN":6.3,"ISTM":35.2,"LNDS":46.9,"LTNG":57.9,"IFLD":55.4,"SWND":54.3,"TRND":56.5,"TSUN":0,"VLCN":0,"WFIR":28.3,"WNTW":51.4}},"greatlakes":{"n":312,"pop":34351119,"avgRisk":50.8,"hazards":{"AVLN":0,"CFLD":33.8,"CWAV":60.7,"DRGT":40.5,"ERQK":60.6,"HAIL":57.4,"HWAV":51.7,"HRCN":27.5,"ISTM":49.5,"LNDS":53.2,"LTNG":47.3,"IFLD":55.4,"SWND":67.2,"TRND":62.2,"TSUN":0,"VLCN":0,"WFIR":17.5,"WNTW":54.6}},"hawaii":{"n":5,"pop":1451939,"avgRisk":75.0,"hazards":{"AVLN":0,"CFLD":49.7,"CWAV":0.6,"DRGT":17.4,"ERQK":72.8,"HAIL":3.6,"HWAV":0.0,"HRCN":57.3,"ISTM":24.2,"LNDS":67.2,"LTNG":75.0,"IFLD":76.6,"SWND":2.8,"TRND":10.0,"TSUN":71.1,"VLCN":43.3,"WFIR":81.0,"WNTW":1.0}},"inlandmtn":{"n":79,"pop":3078406,"avgRisk":42.6,"hazards":{"AVLN":58.6,"CFLD":0,"CWAV":62.5,"DRGT":24.1,"ERQK":49.6,"HAIL":27.1,"HWAV":34.2,"HRCN":0,"ISTM":25.0,"LNDS":69.4,"LTNG":38.4,"IFLD":45.5,"SWND":17.6,"TRND":8.9,"TSUN":0,"VLCN":48.7,"WFIR":81.8,"WNTW":59.6}},"midwest":{"n":198,"pop":4896309,"avgRisk":28.0,"hazards":{"AVLN":0,"CFLD":0,"CWAV":34.0,"DRGT":69.9,"ERQK":18.9,"HAIL":75.4,"HWAV":31.5,"HRCN":5.3,"ISTM":53.8,"LNDS":25.2,"LTNG":30.7,"IFLD":23.4,"SWND":49.5,"TRND":46.2,"TSUN":0,"VLCN":0,"WFIR":58.6,"WNTW":51.8}},"newengland":{"n":69,"pop":15109163,"avgRisk":62.4,"hazards":{"AVLN":44.8,"CFLD":67.5,"CWAV":52.9,"DRGT":33.4,"ERQK":65.2,"HAIL":27.8,"HWAV":47.0,"HRCN":81.3,"ISTM":73.9,"LNDS":67.2,"LTNG":67.0,"IFLD":69.6,"SWND":46.4,"TRND":35.5,"TSUN":0,"VLCN":0,"WFIR":28.9,"WNTW":66.1}},"northcentral":{"n":83,"pop":5616328,"avgRisk":43.0,"hazards":{"AVLN":0,"CFLD":21.0,"CWAV":65.6,"DRGT":53.0,"ERQK":8.9,"HAIL":65.8,"HWAV":44.1,"HRCN":1.1,"ISTM":39.4,"LNDS":49.0,"LTNG":33.7,"IFLD":49.8,"SWND":57.3,"TRND":50.0,"TSUN":0,"VLCN":0,"WFIR":43.1,"WNTW":64.0}},"northernplains":{"n":80,"pop":1018625,"avgRisk":22.7,"hazards":{"AVLN":0,"CFLD":0,"CWAV":67.7,"DRGT":29.0,"ERQK":7.7,"HAIL":63.2,"HWAV":15.6,"HRCN":0,"ISTM":60.6,"LNDS":25.9,"LTNG":10.7,"IFLD":17.8,"SWND":36.5,"TRND":28.8,"TSUN":0,"VLCN":0,"WFIR":63.6,"WNTW":73.9}},"pnw":{"n":85,"pop":10994296,"avgRisk":57.5,"hazards":{"AVLN":59.6,"CFLD":34.3,"CWAV":36.3,"DRGT":9.5,"ERQK":79.1,"HAIL":10.8,"HWAV":60.2,"HRCN":0,"ISTM":36.6,"LNDS":83.9,"LTNG":29.4,"IFLD":46.3,"SWND":14.9,"TRND":9.3,"TSUN":47.4,"VLCN":67.8,"WFIR":59.2,"WNTW":55.6}},"rockymtn":{"n":109,"pop":6610737,"avgRisk":36.5,"hazards":{"AVLN":62.4,"CFLD":0,"CWAV":43.4,"DRGT":37.5,"ERQK":42.3,"HAIL":48.3,"HWAV":16.2,"HRCN":0,"ISTM":24.1,"LNDS":59.0,"LTNG":55.0,"IFLD":39.9,"SWND":27.6,"TRND":28.2,"TSUN":0,"VLCN":36.4,"WFIR":77.2,"WNTW":58.5}},"westerndist":{"n":41,"pop":9087676,"avgRisk":77.6,"hazards":{"AVLN":44.4,"CFLD":62.9,"CWAV":1.8,"DRGT":77.1,"ERQK":87.5,"HAIL":16.1,"HWAV":59.5,"HRCN":0,"ISTM":40.7,"LNDS":81.3,"LTNG":45.2,"IFLD":73.8,"SWND":11.0,"TRND":14.6,"TSUN":50.9,"VLCN":61.1,"WFIR":92.9,"WNTW":37.3}}};
+
+const HAZARD_META = {
+  AVLN: { label: "Avalanche", trend: "Concentrated in steep, snow-heavy mountain terrain; not a broad regional trend so much as a local terrain risk." },
+  CFLD: { label: "Coastal Flooding", trend: "Sea-level rise and higher storm-surge baselines are widely projected to keep increasing coastal flood frequency and depth." },
+  CWAV: { label: "Cold Wave", trend: "A warming Arctic has been linked by some researchers to more frequent bursts of extreme cold reaching further south, alongside an overall warming trend — an active area of climate research." },
+  DRGT: { label: "Drought", trend: "Multi-year droughts have become more frequent and severe across the Southwest and Southern Plains in recent decades." },
+  ERQK: { label: "Earthquake", trend: "Earthquake risk is a function of geology, not climate — it doesn't trend over time the way weather hazards do." },
+  HAIL: { label: "Hail", trend: "Severe hail frequency has been trending upward across parts of the Plains and Midwest as storm energy increases." },
+  HWAV: { label: "Heat Wave", trend: "Widely projected to keep increasing in frequency, duration, and intensity nearly everywhere in the US." },
+  HRCN: { label: "Hurricane / Tropical Storm", trend: "Warmer sea-surface temperatures favor more storms that rapidly intensify, even where total storm counts stay flat." },
+  ISTM: { label: "Ice Storm", trend: "More variable than clearly trending — some regions see more freeze-thaw volatility as winters warm overall." },
+  LNDS: { label: "Landslide", trend: "Closely tied to heavier rainfall events and wildfire-scarred terrain, both of which are increasing in many mountainous regions." },
+  LTNG: { label: "Lightning", trend: "Generally tracks with increased thunderstorm energy in a warming atmosphere." },
+  IFLD: { label: "Riverine / Inland Flooding", trend: "Heavier single-day rainfall events are becoming more common nationally, raising inland flood risk even well away from the coast." },
+  SWND: { label: "Strong Wind", trend: "Tied closely to severe thunderstorm activity, which has been trending upward in parts of the Plains and Midwest." },
+  TRND: { label: "Tornado", trend: "Total US frequency isn't changing much, but activity is shifting east from the historic Plains \"Tornado Alley\" into the mid-South." },
+  TSUN: { label: "Tsunami", trend: "Driven by seismic/volcanic events, not a climate trend — risk is concentrated on specific coastlines." },
+  VLCN: { label: "Volcanic Activity", trend: "Geologic, not climate-driven — risk is concentrated near specific active volcanic systems." },
+  WFIR: { label: "Wildfire", trend: "Fire seasons have lengthened by roughly 2–3 months since the 1970s in parts of the West, with risk projected to keep rising." },
+  WNTW: { label: "Winter Weather", trend: "Total snowfall is trending down in many areas, but individual storms are increasingly intense when they do hit." },
+};
+
+function riskTier(score) { return score >= 60 ? "high" : score >= 35 ? "mod" : "low"; }
+
+function topHazards(id, n) {
+  const h = NRI_DATA[id].hazards;
+  return Object.entries(h)
+    .filter(([, v]) => v > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, n)
+    .map(([code, score]) => ({ code, score, label: HAZARD_META[code].label, tier: riskTier(score) }));
+}
+
+// ---- Hand-researched "Looking forward" outlook + real named events, for 3 example districts only ----
+// (kept from the original mockup — everything else is honestly marked not-yet-populated below)
+const CURATED = {
+  southeast: {
+    outlook: "NOAA and independent climate-risk models generally project continued-to-increasing hurricane intensity and rainfall rates for the Gulf and Southeast Atlantic coasts, even where storm counts stay flat — warmer sea-surface temperatures favor more storms that rapidly intensify. Inland flooding risk (as with 2024's Hurricane Helene reaching well into the NC mountains) is also flagged as a growing, under-appreciated risk beyond the immediate coast.",
+    events: [
+      { year: "2024", name: "Hurricane Helene", note: "Catastrophic inland flooding, especially western North Carolina (Asheville area); one of the deadliest US hurricanes in decades." },
+      { year: "2022", name: "Hurricane Ian", note: "Category 4 landfall near Fort Myers, FL; among the costliest hurricanes in US history." },
+      { year: "2018", name: "Hurricane Michael", note: "Category 5 landfall on the Florida Panhandle, the strongest storm to hit the continental US since Andrew (1992)." },
+      { year: "2005", name: "Hurricane Katrina", note: "Catastrophic impact across LA, MS, AL; one of the deadliest and costliest disasters in US history." },
+    ],
+  },
+  west: {
+    outlook: "Warmer, drier conditions and a longer fire season (now roughly 2–3 months longer than the 1970s in parts of the West) are widely projected to continue, with insurers' climate-risk models generally showing rising wildfire exposure across California, Nevada, Arizona, and the Southwest over the next 30 years — not a uniform increase everywhere, but a clear regional trend.",
+    events: [
+      { year: "2025", name: "Palisades & Eaton Fires", note: "Los Angeles-area fires in January 2025; among the most destructive in California history by structures lost." },
+      { year: "2018", name: "Camp Fire", note: "Butte County, CA; the deadliest and most destructive wildfire in California history (85 deaths)." },
+    ],
+  },
+  midwest: {
+    outlook: "Research on tornado activity shows less a change in total US frequency and more a geographic shift — \"Tornado Alley\" activity has been trending relatively flat-to-down in its historic core (KS/OK/TX panhandle) while shifting east into the mid-South. Kansas and Nebraska remain consistently in the highest-frequency tier nationally regardless of that shift.",
+    events: [
+      { year: "2014", name: "Pilger, Nebraska twin tornadoes", note: "Two EF4 tornadoes on the ground simultaneously — a rare, well-documented event." },
+      { year: "2007", name: "Greensburg, Kansas tornado", note: "EF5 tornado destroyed roughly 95% of the town; among the clearest EF5 examples in the district's states." },
+    ],
+  },
+};
+
+const DATA_DISTRICTS = new Set(Object.keys(NRI_DATA));
+
+const picker = document.getElementById("districtPicker");
+const main = document.getElementById("mainContent");
+
+DISTRICTS.forEach((d) => {
+  const chip = document.createElement("button");
+  chip.className = "district-chip" + (DATA_DISTRICTS.has(d.id) ? " has-data" : "");
+  chip.type = "button";
+  chip.textContent = d.name;
+  chip.dataset.id = d.id;
+  chip.addEventListener("click", () => selectDistrict(d.id));
+  picker.appendChild(chip);
+});
+
+function riskLabel(r) { return r === "high" ? "High" : r === "mod" ? "Moderate" : "Lower"; }
+function riskClass(r) { return r === "high" ? "risk-high" : r === "mod" ? "risk-mod" : "risk-low"; }
+
+function barChartSvg(data, color) {
+  const w = 600, h = 220, padL = 30, padR = 10, padT = 10, padB = 24;
+  const max = Math.max(...data.map((p) => p.v));
+  const plotW = w - padL - padR, plotH = h - padT - padB;
+  const slot = plotW / data.length;
+  const barW = slot * 0.55;
+  let bars = "", labels = "", grid = "";
+  [0, 0.25, 0.5, 0.75, 1].forEach((f) => {
+    const y = padT + plotH * (1 - f);
+    grid += `<line class="gridline" x1="${padL}" y1="${y}" x2="${w - padR}" y2="${y}" />`;
+    grid += `<text class="axis-label" x="${padL - 6}" y="${y + 3}" text-anchor="end">${(max * f).toFixed(max < 10 ? 1 : 0)}</text>`;
+  });
+  data.forEach((p, i) => {
+    const x = padL + slot * i + (slot - barW) / 2;
+    const barH = (p.v / max) * plotH;
+    const y = padT + plotH - barH;
+    bars += `<rect class="bar" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" rx="2" style="fill:${color}" />`;
+    labels += `<text class="bar-label" x="${(x + barW / 2).toFixed(1)}" y="${h - 6}" text-anchor="middle">${p.d}</text>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}${labels}</svg>`;
+}
+
+function hazardBarChartSvg(items) {
+  const rowH = 30, padL = 4, padR = 46, padT = 4, labelW = 168;
+  const w = 600, h = padT + items.length * rowH + 4;
+  const plotL = labelW, plotR = w - padR;
+  const max = 100; // FEMA NRI RISKS fields are 0-100 percentile scores
+  let rows = "";
+  items.forEach((it, i) => {
+    const y = padT + i * rowH;
+    const barY = y + 6, barH = rowH - 14;
+    const barW = ((plotR - plotL) * it.score) / max;
+    const color = it.tier === "high" ? "var(--critical)" : it.tier === "mod" ? "var(--warning)" : "var(--good)";
+    rows += `<text class="hbar-label" x="${plotL - 8}" y="${barY + barH / 2 + 4}" text-anchor="end">${it.label}</text>`;
+    rows += `<rect x="${plotL}" y="${barY}" width="${(plotR - plotL).toFixed(1)}" height="${barH}" rx="4" fill="var(--gridline)" />`;
+    rows += `<rect x="${plotL}" y="${barY}" width="${barW.toFixed(1)}" height="${barH}" rx="4" fill="${color}" />`;
+    rows += `<text class="hbar-value" x="${plotR + 6}" y="${barY + barH / 2 + 4}" text-anchor="start">${it.score.toFixed(0)}</text>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${rows}</svg>`;
+}
+
+function districtDetail(d) {
+  const nri = NRI_DATA[d.id];
+  const curated = CURATED[d.id];
+  const wrap = document.createElement("div");
+
+  const headerSection = document.createElement("div");
+  headerSection.className = "crisis-section";
+  headerSection.innerHTML = `
+    <div class="district-header">
+      <h2>${d.name}</h2>
+    </div>
+    <div class="district-states">${d.states}</div>
+    <div class="district-stats">
+      <span class="district-stat"><b>${nri.n}</b> counties (approx.)</span>
+      <span class="district-stat"><b>${(nri.pop / 1e6).toFixed(nri.pop < 1e6 ? 2 : 1)}M</b> people</span>
+      <span class="district-stat"><b>${nri.avgRisk}</b> avg. FEMA Risk Index (0–100)</span>
+    </div>
+  `;
+  wrap.appendChild(headerSection);
+
+  const top = topHazards(d.id, 4);
+  const top8 = topHazards(d.id, 8);
+
+  const hazardSection = document.createElement("div");
+  hazardSection.className = "crisis-section";
+  hazardSection.innerHTML = `
+    <h3>Key hazard profile</h3>
+    <p class="crisis-caption">This district's 4 highest-scoring hazard types, out of FEMA's 18 tracked hazard categories — <strong>real data</strong>, from the National Risk Index, aggregated over this district's approximate county territory (see Data Sources below for the county map's confidence level).</p>
+    <div class="hazard-tags">
+      ${top.map((h) => `<span class="hazard-tag"><span class="risk-dot ${riskClass(h.tier)}"></span>${h.label} — ${riskLabel(h.tier)} (${h.score.toFixed(0)})</span>`).join("")}
+    </div>
+  `;
+  wrap.appendChild(hazardSection);
+
+  const chartSection = document.createElement("div");
+  chartSection.className = "crisis-section";
+  chartSection.innerHTML = `
+    <h3>Hazard severity, by type</h3>
+    <p class="crisis-caption">This district's top ${top8.length} hazards by FEMA National Risk Index score (0–100, a national percentile — not an event count or probability). This is a current-snapshot severity ranking, not a 1970–present time series; a true historical trend chart would need NOAA Storm Events or OpenFEMA disaster-declaration data, not yet pulled in — see Data Sources.</p>
+    <div class="svg-chart-wrap">${hazardBarChartSvg(top8)}</div>
+  `;
+  wrap.appendChild(chartSection);
+
+  const outlookSection = document.createElement("div");
+  outlookSection.className = "crisis-section";
+  if (curated) {
+    outlookSection.innerHTML = `
+      <h3>Looking forward</h3>
+      <div class="outlook-box"><strong>Outlook:</strong> ${curated.outlook}</div>
+    `;
+  } else {
+    const t1 = top[0];
+    outlookSection.innerHTML = `
+      <h3>Looking forward</h3>
+      <p class="crisis-caption">Not hand-researched for this district yet (only Southeast, West, and Midwest have a written outlook in this mockup). Here's a data-grounded starting point based on its top-ranked real hazard:</p>
+      <div class="outlook-box"><strong>${t1.label}</strong> is this district's highest-scoring hazard nationally (FEMA NRI score ${t1.score.toFixed(0)}/100). ${HAZARD_META[t1.code].trend}</div>
+    `;
+  }
+  wrap.appendChild(outlookSection);
+
+  const eventsSection = document.createElement("div");
+  eventsSection.className = "crisis-section";
+  if (curated) {
+    eventsSection.innerHTML = `
+      <h3>Notable major disasters</h3>
+      <p class="crisis-caption">Real, well-documented events affecting this district's states — shown as examples of the "notable events" concept, not a complete list.</p>
+      <ul class="events-list">
+        ${curated.events.map((e) => `<li><span class="event-year">${e.year}</span><span><span class="event-name">${e.name}.</span> ${e.note}</span></li>`).join("")}
+      </ul>
+    `;
+  } else {
+    eventsSection.innerHTML = `
+      <h3>Notable major disasters</h3>
+      <p class="crisis-caption placeholder-inline">Not populated for this district yet — the real version would pull a curated list from NOAA's Billion-Dollar Disasters and OpenFEMA disaster declarations, filtered to this district's counties (only Southeast, West, and Midwest have hand-picked examples in this mockup).</p>
+    `;
+  }
+  wrap.appendChild(eventsSection);
+
+  const traumaSection = document.createElement("div");
+  traumaSection.className = "crisis-section";
+  traumaSection.innerHTML = `
+    <h3>Community trauma events</h3>
+    <p class="crisis-caption">School shootings and other major community-trauma incidents — intentionally shown here without specific fabricated examples, out of respect for real events and their families. The real version would pull structured incident data (date, location, type) from the source below.</p>
+    <div class="trauma-note">Intended source: K-12 School Shooting Database (k12ssdb.org / Center for Homeland Defense and Security), which tracks incidents nationally back to 1970 — not yet connected in this mockup.</div>
+  `;
+  wrap.appendChild(traumaSection);
+
+  return wrap;
+}
+
+function selectDistrict(id) {
+  document.querySelectorAll(".district-chip").forEach((c) => c.classList.toggle("active", c.dataset.id === id));
+  const d = DISTRICTS.find((x) => x.id === id);
+  main.innerHTML = "";
+  main.appendChild(districtDetail(d));
+}
+
+// Data-sources reference card, always shown below the selected district.
+function sourcesCard() {
+  const section = document.createElement("div");
+  section.className = "crisis-section";
+  section.innerHTML = `
+    <h3>Data sources this view draws from</h3>
+    <p class="crisis-caption">The hazard profile and severity chart above are live, connected data (FEMA National Risk Index). Everything else below is still conceptual — this mockup exists to scope what's realistically buildable per district.</p>
+    <div class="sources-grid">
+      <div class="source-card"><div class="src-name">FEMA National Risk Index — CONNECTED</div><div class="src-detail">County-level, 18 hazard types. Powers the "Key hazard profile" and "Hazard severity" sections above for all 17 districts, aggregated over the approximate county-to-district map below.</div></div>
+      <div class="source-card"><div class="src-name">EFCA district county map — CONNECTED (approximate)</div><div class="src-detail">Built from real church-location evidence pulled from each district's own "Find a Church" directory, not an official EFCA boundary file. Full per-state confidence notes and known ambiguities in the companion crosswalk files delivered alongside this mockup — worth a real answer from EFCA if county-level precision ever matters more than it does for this hazard overview.</div></div>
+      <div class="source-card"><div class="src-name">NOAA NCEI Storm Events Database</div><div class="src-detail">Event-level tornado/hail/flood/wind records by state & county, 1950–present (full detail from 1996). Would power a true "Hazard severity, by type" panel — a real historical trend chart, 1970–present.</div></div>
+      <div class="source-card"><div class="src-name">OpenFEMA Disaster Declarations</div><div class="src-detail">Federal disaster declarations by state/county, 1953–present. A rough US analog to the Global view's "disaster events" series.</div></div>
+      <div class="source-card"><div class="src-name">NIFC / USDA Forest Service</div><div class="src-detail">Wildfire acres burned by state and year; NOAA/AccuWeather publish annual seasonal outlooks usable for the "forecast" framing.</div></div>
+      <div class="source-card"><div class="src-name">NOAA HURDAT2 + CPC outlooks</div><div class="src-detail">Historical Atlantic hurricane tracks/landfalls by state, plus NOAA's annual seasonal hurricane outlook for forecast-style content.</div></div>
+      <div class="source-card"><div class="src-name">First Street Foundation</div><div class="src-detail">30-year forward-looking property-level flood/fire/wind/heat risk scores. Excellent for "looking forward" — bulk/API access may require a paid license at scale.</div></div>
+      <div class="source-card"><div class="src-name">K-12 School Shooting Database</div><div class="src-detail">Incident-level school shooting data, 1970–present, via the Center for Homeland Defense and Security (k12ssdb.org). Handle with care — see note above.</div></div>
+      <div class="source-card"><div class="src-name">NOAA Billion-Dollar Disasters</div><div class="src-detail">State-level list of the costliest weather/climate disasters — good source for the "notable major disasters" list, already curated to significant events.</div></div>
+    </div>
+  `;
+  return section;
+}
+
+selectDistrict("southeast");
+main.appendChild(sourcesCard());
+const origSelect = selectDistrict;
+window.selectDistrict = function(id) {
+  document.querySelectorAll(".district-chip").forEach((c) => c.classList.toggle("active", c.dataset.id === id));
+  const d = DISTRICTS.find((x) => x.id === id);
+  main.innerHTML = "";
+  main.appendChild(districtDetail(d));
+  main.appendChild(sourcesCard());
+};
+document.querySelectorAll(".district-chip").forEach((chip) => {
+  chip.addEventListener("click", () => window.selectDistrict(chip.dataset.id));
+});
+</script>
+</body>
+</html>
