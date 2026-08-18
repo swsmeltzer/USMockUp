@@ -1,0 +1,90 @@
+{
+  "purpose": "Machine-readable county-to-EFCA-district territory assignment used to build us_view_hazard_profiles.json. Companion to district_boundary_crosswalk.md (the human-readable writeup with sourcing/confidence notes per state) and us_view_mockup.html (the visual mockup this feeds).",
+  "built": "2026-08-18",
+  "how_to_read": "For each district: 'whole_states' lists states/territories assigned entirely to that district. 'partial_states' lists, for states split between multiple districts, the specific county list assigned to THIS district (county names match FEMA NRI's COUNTY field format — no 'County'/'Parish' suffix). Where a partial_states entry says 'exact_list_not_archived', that district's hazard numbers in us_view_hazard_profiles.json are still real and verified (they were computed at fetch time), but the specific county list used for that one state fragment wasn't saved separately — see notes.",
+  "whole_state_assignments": {
+    "Allegheny": ["West Virginia"],
+    "EFCA East": ["Delaware", "New Jersey", "Virginia", "District of Columbia"],
+    "EFCA Southeast": ["Alabama", "Florida", "Georgia", "Louisiana", "Mississippi", "North Carolina", "South Carolina", "Tennessee"],
+    "Texas-Oklahoma": ["Oklahoma"],
+    "EFCA West": ["Arizona", "New Mexico", "Utah"],
+    "Forest Lakes": ["Wisconsin"],
+    "Great Lakes": ["Illinois", "Indiana"],
+    "Hawaii": ["Hawaii"],
+    "Midwest": ["Kansas", "Nebraska"],
+    "New England": ["Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont"],
+    "EFCA Central": ["Arkansas", "Iowa", "Missouri"],
+    "Rocky Mountain": ["Colorado", "Wyoming"],
+    "Northern Plains": ["North Dakota"],
+    "Pacific Northwest": ["Alaska", "Oregon"],
+    "North Central": ["Minnesota (all except the 4 counties listed under Northern Plains' Minnesota entry below)"],
+    "Western District": [],
+    "Midwest_note": "Simplification: EFCA's own description also gives Midwest a 'Kansas City metro, Missouri' pocket, which we folded into EFCA Central's whole-Missouri assignment rather than carving out specific KC-metro counties. See district_boundary_crosswalk.md."
+  },
+  "partial_states": {
+    "Texas": { "Texas-Oklahoma": "all counties except El Paso", "EFCA West": ["El Paso"] },
+    "Pennsylvania": {
+      "Allegheny": ["Allegheny","Armstrong","Beaver","Bedford","Blair","Butler","Cambria","Cameron","Centre","Clarion","Clearfield","Clinton","Crawford","Elk","Erie","Fayette","Forest","Fulton","Greene","Huntingdon","Indiana","Jefferson","Lawrence","McKean","Mercer","Potter","Somerset","Venango","Warren","Washington","Westmoreland"],
+      "EFCA East": ["Adams","Berks","Bradford","Bucks","Carbon","Chester","Columbia","Cumberland","Dauphin","Delaware","Franklin","Juniata","Lackawanna","Lancaster","Lebanon","Lehigh","Luzerne","Lycoming","Mifflin","Monroe","Montgomery","Montour","Northampton","Northumberland","Perry","Philadelphia","Pike","Schuylkill","Snyder","Sullivan","Susquehanna","Tioga","Union","Wayne","Wyoming","York"]
+    },
+    "California": {
+      "EFCA West": ["Alameda","Fresno","Imperial","Inyo","Kern","Kings","Los Angeles","Madera","Mariposa","Merced","Mono","Monterey","Orange","Riverside","San Benito","San Bernardino","San Diego","San Luis Obispo","San Mateo","Santa Barbara","Santa Clara","Santa Cruz","Tulare","Ventura"],
+      "Western District": ["Alpine","Amador","Butte","Calaveras","Colusa","Contra Costa","Del Norte","El Dorado","Glenn","Humboldt","Lake","Lassen","Marin","Mendocino","Modoc","Napa","Nevada","Placer","Plumas","Sacramento","San Francisco","San Joaquin","Shasta","Sierra","Siskiyou","Solano","Sonoma","Stanislaus","Sutter","Tehama","Trinity","Tuolumne","Yolo","Yuba"]
+    },
+    "Maryland": {
+      "EFCA East": ["Washington","Frederick","Baltimore City","Baltimore","Montgomery","Carroll","Howard","Anne Arundel","Harford","Cecil","Kent","Queen Annes","Talbot","Caroline","Dorchester","Wicomico","Somerset","Worcester","St. Marys","Charles","Calvert","Prince Georges"],
+      "Allegheny": "exact_list_not_archived (evidence: only Garrett County/Mountain Lake Park confirmed; hazard total for Allegheny includes an assumed small MD panhandle share)"
+    },
+    "New York": {
+      "EFCA East": ["Albany","Bronx","Broome","Chemung","Chenango","Columbia","Cortland","Delaware","Dutchess","Greene","Kings","Madison","Montgomery","Nassau","New York","Oneida","Orange","Otsego","Putnam","Queens","Rensselaer","Richmond","Rockland","Saratoga","Schenectady","Schoharie","Suffolk","Sullivan","Tioga","Tompkins","Ulster","Westchester"],
+      "New England": ["Hamilton"],
+      "Allegheny": "exact_list_not_archived (evidence: Rochester/Buffalo corridor confirmed; hazard total for Allegheny includes an assumed western-NY share)"
+    },
+    "Kentucky": {
+      "EFCA Southeast": "all counties except the 7 listed under Great Lakes below (113 counties)",
+      "Great Lakes": ["Boone","Kenton","Campbell","Gallatin","Grant","Pendleton","Bracken"]
+    },
+    "Ohio": {
+      "Great Lakes": ["Adams","Allen","Auglaize","Brown","Butler","Champaign","Clark","Clermont","Clinton","Crawford","Darke","Defiance","Erie","Fulton","Greene","Hamilton","Hancock","Hardin","Henry","Highland","Huron","Logan","Lucas","Mercer","Miami","Montgomery","Ottawa","Paulding","Preble","Putnam","Sandusky","Seneca","Shelby","Van Wert","Warren","Williams","Wood","Wyandot"],
+      "Allegheny": "exact_list_not_archived (all remaining ~50 Ohio counties; hazard total for Allegheny includes this full remainder)"
+    },
+    "Michigan": {
+      "Great Lakes": "all Lower Peninsula counties, plus these eastern Upper Peninsula counties: Marquette, Alger, Schoolcraft, Luce, Chippewa, Mackinac, Delta (per official description 'Lower Peninsula and Eastern Upper')",
+      "Forest Lakes": ["Gogebic","Ontonagon","Houghton","Keweenaw","Baraga","Iron","Dickinson","Menominee"]
+    },
+    "South Dakota": {
+      "EFCA Central": ["Aurora","Beadle","Bon Homme","Brookings","Brule","Buffalo","Charles Mix","Clay","Davison","Douglas","Hand","Hanson","Hutchinson","Hyde","Jerauld","Kingsbury","Lake","Lincoln","McCook","Miner","Minnehaha","Moody","Sanborn","Turner","Union","Yankton"],
+      "Rocky Mountain": "exact_list_not_archived (western SD / Black Hills counties, ~22 counties incl. Custer, Fall River, Haakon, Meade, Pennington)",
+      "Northern Plains": ["Brown","Marshall","Day","Roberts","Grant","Codington","Clark","Hamlin","Deuel","Spink","Faulk","Edmunds","McPherson","Campbell","Walworth","Potter","Sully","Corson","Dewey","Ziebach","Perkins","Harding"],
+      "note": "Central SD (Hughes, Stanley, Jackson, Lyman, Tripp, Gregory, Mellette, Todd, Bennett) has no confirmed church evidence for any of the 3 districts — a genuine gap, not assigned here."
+    },
+    "Idaho": {
+      "EFCA West": ["Ada","Adams","Bannock","Bear Lake","Bingham","Blaine","Boise","Bonneville","Butte","Camas","Canyon","Caribou","Cassia","Custer","Elmore","Franklin","Fremont","Gem","Gooding","Jefferson","Jerome","Lemhi","Lincoln","Madison","Minidoka","Oneida","Owyhee","Payette","Power","Teton","Twin Falls","Valley","Washington"],
+      "Inland Mountain": ["Boundary","Bonner","Kootenai","Benewah","Shoshone","Latah","Clearwater","Idaho","Lewis","Nez Perce"]
+    },
+    "Montana": {
+      "Northern Plains": ["Sheridan"],
+      "Inland Mountain": "exact_list_not_archived (all remaining ~55 Montana counties; hazard total for Inland Mountain includes this full remainder)"
+    },
+    "Washington": {
+      "Inland Mountain": ["Okanogan","Stevens","Grant","Benton","Spokane","Whitman","Chelan","Ferry","Douglas","Adams","Asotin","Columbia","Franklin","Garfield","Kittitas","Klickitat","Lincoln","Pend Oreille","Walla Walla","Yakima"],
+      "Pacific Northwest": ["Clallam","Cowlitz","Grays Harbor","Island","Jefferson","King","Kitsap","Lewis","Mason","Pacific","Pierce","San Juan","Skagit","Skamania","Snohomish","Thurston","Wahkiakum","Whatcom","Clark"]
+    },
+    "Nevada": {
+      "EFCA West": ["Clark"],
+      "Western District": ["Washoe","Humboldt","Pershing","Lander","Eureka","Elko","Churchill"],
+      "note": "9 remaining rural central-NV counties have no confirmed church evidence for either district — a genuine gap, not assigned here."
+    },
+    "Minnesota": {
+      "Northern Plains": ["Clay","Marshall","Norman","Wilkin"],
+      "North Central": "all remaining 83 Minnesota counties",
+      "note": "Karlstad (Marshall County) is a contested dual-claim in the source evidence — see district_boundary_crosswalk.md."
+    }
+  },
+  "known_gaps": [
+    "Allegheny's exact Ohio/Maryland/New York county lists were used to compute its hazard numbers at fetch time but weren't separately archived — only Pennsylvania's Allegheny/EFCA East split (above) is fully preserved for that district.",
+    "Inland Mountain's exact Montana county list (beyond Washington and Idaho, both fully archived above) wasn't separately preserved.",
+    "Rocky Mountain's exact South Dakota county list wasn't separately preserved (South Dakota's EFCA Central and Northern Plains shares are fully archived above).",
+    "If exact reproduction of these three fragments matters later, the fix is a fresh, tightly-scoped re-fetch using the same method documented in us_view_hazard_profiles.json's methodology note — not a guess."
+  ]
+}
